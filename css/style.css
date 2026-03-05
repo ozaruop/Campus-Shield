@@ -1,0 +1,134 @@
+/* ─── GOOGLE FONTS ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap');
+
+/* ─── CSS VARIABLES ─────────────────────────────────────── */
+:root {
+  --bg:         #0a0b0f;
+  --surface:    #111318;
+  --surface-2:  #1a1d27;
+  --border:     #1e2130;
+  --red:        #ff2d55;
+  --red-glow:   rgba(255, 45, 85, 0.2);
+  --amber:      #ffb830;
+  --green:      #00e5a0;
+  --blue:       #3d8bff;
+  --text:       #e8eaf0;
+  --muted:      #5a5f75;
+  --font-ui:    'Syne', sans-serif;
+  --font-mono:  'Space Mono', monospace;
+}
+
+/* ─── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ─── SHARED NAV ─────────────────────────────────────────── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: 58px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.logo {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.logo-dot {
+  width: 9px;
+  height: 9px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.6); }
+}
+
+/* ─── STATUS CHIP ────────────────────────────────────────── */
+.chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .3s;
+}
+
+.chip.connected  { border-color: var(--green); color: var(--green); }
+.chip.alert-live { border-color: var(--red);   color: var(--red);   }
+.chip.demo       { border-color: var(--amber);  color: var(--amber); }
+
+.chip-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: .04em;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  color: var(--text);
+  border-color: var(--muted);
+}
+
+/* ─── UTILITY ────────────────────────────────────────────── */
+.text-red   { color: var(--red); }
+.text-green { color: var(--green); }
+.text-amber { color: var(--amber); }
+.text-muted { color: var(--muted); }
+.font-mono  { font-family: var(--font-mono); }

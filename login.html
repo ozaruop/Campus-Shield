@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusShield — Login</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/login.css"/>
+</head>
+<body>
+
+  <!-- ─── NAV ─────────────────────────────────────────────── -->
+  <nav>
+    <a class="logo" href="login.html">
+      <span class="logo-dot"></span>
+      CAMPUS<span style="color:var(--text)">SHIELD</span>
+    </a>
+    <div class="chip demo">
+      <span class="chip-dot"></span>
+      <span>GEHU DEHRADUN</span>
+    </div>
+  </nav>
+
+  <!-- ─── LOGIN PAGE ───────────────────────────────────────── -->
+  <main class="login-page">
+
+    <!-- Background effects -->
+    <div class="login-grid-bg"></div>
+    <div class="login-glow"></div>
+
+    <!-- Card container -->
+    <div class="login-container">
+
+      <!-- Tab switcher -->
+      <div class="login-tabs">
+        <button class="login-tab active" id="tabStudent"
+          onclick="switchTab('student')">
+          🎓 Student
+        </button>
+        <button class="login-tab" id="tabAdmin"
+          onclick="switchTab('admin')">
+          🛡️ Admin
+        </button>
+      </div>
+
+      <!-- ── STUDENT LOGIN FORM ────────────────────────────── -->
+      <div class="login-card" id="studentForm">
+
+        <div class="login-card-header">
+          <h2>Student Login</h2>
+          <p>Enter your details to access the safety system</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Student ID</label>
+          <input
+            type="text"
+            class="form-input"
+            id="studentId"
+            placeholder="e.g. 2421057"
+            maxlength="20"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input
+            type="text"
+            class="form-input"
+            id="studentName"
+            placeholder="e.g. Aditya Thapliyal"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Course</label>
+            <select class="form-input form-select" id="studentCourse">
+              <option value="">Select course</option>
+              <option value="BCA">BCA</option>
+              <option value="BCA-DS">BCA (Data Science)</option>
+              <option value="BCA-AI">BCA (AI/ML)</option>
+              <option value="MCA">MCA</option>
+              <option value="B.Tech CSE">B.Tech CSE</option>
+              <option value="B.Tech IT">B.Tech IT</option>
+              <option value="B.Tech ECE">B.Tech ECE</option>
+              <option value="B.Tech ME">B.Tech ME</option>
+              <option value="B.Tech CE">B.Tech CE</option>
+              <option value="MBA">MBA</option>
+              <option value="BBA">BBA</option>
+              <option value="B.Com">B.Com</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <input
+              type="text"
+              class="form-input"
+              id="studentSection"
+              placeholder="e.g. A2"
+              maxlength="5"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input
+            type="tel"
+            class="form-input"
+            id="studentPhone"
+            placeholder="e.g. 6395613242"
+            maxlength="10"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Emergency Contact</label>
+          <input
+            type="tel"
+            class="form-input"
+            id="studentEmergency"
+            placeholder="Parent/Guardian number"
+            maxlength="10"
+          />
+        </div>
+
+        <!-- Error message -->
+        <p class="form-error" id="studentError"></p>
+
+        <button class="login-btn" onclick="studentLogin()">
+          Enter Safety System →
+        </button>
+
+        <p class="form-note">
+          Your details are only used to identify you during emergencies.
+        </p>
+
+      </div>
+
+      <!-- ── ADMIN LOGIN FORM ──────────────────────────────── -->
+      <div class="login-card hidden" id="adminForm">
+
+        <div class="login-card-header">
+          <h2>Admin Login</h2>
+          <p>Campus security & administration access only</p>
+        </div>
+
+        <div class="login-card-icon">🛡️</div>
+
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input
+            type="text"
+            class="form-input"
+            id="adminUsername"
+            placeholder="Enter admin username"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              class="form-input"
+              id="adminPassword"
+              placeholder="Enter password"
+            />
+            <button class="eye-btn" onclick="togglePassword()">👁</button>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <p class="form-error" id="adminError"></p>
+
+        <button class="login-btn admin" onclick="adminLogin()">
+          Access Dashboard →
+        </button>
+
+        <p class="form-note">
+          Default: username <strong>admin</strong> / password <strong>campus123</strong>
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom branding -->
+    <p class="login-footer">
+      CampusShield v1.0 — Graphic Era Hill University, Dehradun
+    </p>
+
+  </main>
+
+  <!-- ─── SCRIPTS ───────────────────────────────────────────── -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/login.js"></script>
+
+</body>
+</html>

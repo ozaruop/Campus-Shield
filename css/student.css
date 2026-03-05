@@ -1,0 +1,304 @@
+/* ─── STUDENT PAGE LAYOUT ────────────────────────────────── */
+.student-page {
+  min-height: calc(100vh - 58px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 40px 20px;
+}
+
+/* ─── BACKGROUND GLOW EFFECT ─────────────────────────────── */
+.bg-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,45,85,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  transition: all 0.6s ease;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.bg-glow.active {
+  background: radial-gradient(circle, rgba(255,45,85,0.18) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(1.3);
+}
+
+/* ─── GRID BACKGROUND ────────────────────────────────────── */
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(30,33,48,0.6) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30,33,48,0.6) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+}
+
+/* ─── HERO TEXT ──────────────────────────────────────────── */
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.15;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-title span {
+  color: var(--red);
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+  max-width: 360px;
+  line-height: 1.7;
+  margin-bottom: 56px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ─── SOS BUTTON ─────────────────────────────────────────── */
+.sos-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 48px;
+  z-index: 2;
+}
+
+/* Ripple rings */
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--red);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ring-1 { width: 180px; height: 180px; }
+.ring-2 { width: 230px; height: 230px; }
+.ring-3 { width: 280px; height: 280px; }
+
+.sos-wrapper.pulsing .ring-1 {
+  animation: ring-expand 2s ease-out infinite;
+}
+.sos-wrapper.pulsing .ring-2 {
+  animation: ring-expand 2s ease-out 0.4s infinite;
+}
+.sos-wrapper.pulsing .ring-3 {
+  animation: ring-expand 2s ease-out 0.8s infinite;
+}
+
+@keyframes ring-expand {
+  0%   { opacity: 0.6; transform: scale(0.8); }
+  100% { opacity: 0;   transform: scale(1.2); }
+}
+
+/* Main SOS Button */
+.sos-btn {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: none;
+  background: radial-gradient(circle at 35% 35%, #ff5575, #cc1133);
+  color: white;
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  box-shadow:
+    0 0 0 4px rgba(255,45,85,0.15),
+    0 0 40px rgba(255,45,85,0.3),
+    0 8px 32px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.sos-btn:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 0 4px rgba(255,45,85,0.25),
+    0 0 60px rgba(255,45,85,0.45),
+    0 8px 40px rgba(0,0,0,0.6);
+}
+
+.sos-btn:active {
+  transform: scale(0.97);
+}
+
+.sos-btn .btn-label {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 4px;
+}
+
+.sos-btn .btn-sub {
+  font-size: 9px;
+  letter-spacing: 2px;
+  opacity: 0.75;
+  font-weight: 400;
+}
+
+/* Sent state */
+.sos-btn.sent {
+  background: radial-gradient(circle at 35% 35%, #00e5a0, #00a570);
+  box-shadow:
+    0 0 0 4px rgba(0,229,160,0.15),
+    0 0 40px rgba(0,229,160,0.3),
+    0 8px 32px rgba(0,0,0,0.5);
+  cursor: default;
+}
+
+/* ─── STATUS MESSAGE ─────────────────────────────────────── */
+.status-msg {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  min-height: 20px;
+  transition: all .3s;
+  position: relative;
+  z-index: 2;
+  letter-spacing: 0.05em;
+}
+
+.status-msg.success { color: var(--green); }
+.status-msg.error   { color: var(--red); }
+.status-msg.loading { color: var(--amber); }
+
+/* ─── INFO CARDS ─────────────────────────────────────────── */
+.info-cards {
+  display: flex;
+  gap: 12px;
+  margin-top: 48px;
+  position: relative;
+  z-index: 2;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-width: 130px;
+  text-align: center;
+  transition: border-color .3s;
+}
+
+.info-card:hover {
+  border-color: var(--muted);
+}
+
+.info-card .card-icon {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.info-card .card-title {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+.info-card .card-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 4px;
+  font-family: var(--font-mono);
+}
+
+/* ─── LOCATION BAR ───────────────────────────────────────── */
+.location-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 20px;
+  position: relative;
+  z-index: 2;
+  max-width: 380px;
+  width: 100%;
+}
+
+.location-bar .loc-icon { font-size: 14px; }
+.location-bar span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.location-bar.acquired { border-color: var(--green); color: var(--green); }
+
+/* ─── ALERT HISTORY ──────────────────────────────────────── */
+.alert-history {
+  margin-top: 40px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  z-index: 2;
+}
+
+.alert-history h3 {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.history-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+}
+
+.history-time { color: var(--muted); margin-left: auto; }

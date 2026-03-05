@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusShield — Stay Safe</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/student.css"/>
+</head>
+<body>
+
+  <!-- ─── NAV ─────────────────────────────────────────────── -->
+  <nav>
+    <a class="logo" href="login.html">
+      <span class="logo-dot"></span>
+      CAMPUS<span style="color:var(--text)">SHIELD</span>
+    </a>
+
+    <div id="statusChip" class="chip demo">
+      <span class="chip-dot"></span>
+      <span id="statusText">CONNECTING...</span>
+    </div>
+
+    <a href="admin.html" class="btn btn-ghost">Admin →</a>
+  </nav>
+
+  <!-- ─── STUDENT PAGE ──────────────────────────────────────── -->
+  <main class="student-page">
+
+    <!-- Background effects -->
+    <div class="grid-bg"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+
+    <!-- Hero text -->
+    <p class="hero-label">Campus Safety System</p>
+    <h1 class="hero-title">
+      One tap.<br/>
+      <span>Instant alert.</span>
+    </h1>
+    <p class="hero-subtitle">
+      Press the SOS button to silently notify campus security
+      and nearby students with your location.
+    </p>
+
+    <!-- SOS Button -->
+    <div class="sos-wrapper" id="sosWrapper">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+      <button class="sos-btn" id="sosBtn" onclick="triggerAlert()">
+        <span class="btn-label">SOS</span>
+        <span class="btn-sub">TAP TO ALERT</span>
+      </button>
+    </div>
+
+    <!-- Status message -->
+    <p class="status-msg" id="statusMsg">
+      Ready — your location will be shared on alert
+    </p>
+
+    <!-- Location bar -->
+    <div class="location-bar" id="locationBar">
+      <span class="loc-icon">📍</span>
+      <span id="locationText">Acquiring location...</span>
+    </div>
+
+    <!-- Info cards -->
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="card-icon">🛡️</div>
+        <div class="card-title">Status</div>
+        <div class="card-value" id="cardStatus">SAFE</div>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">📡</div>
+        <div class="card-title">Alerts Sent</div>
+        <div class="card-value" id="cardCount">0</div>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">🕐</div>
+        <div class="card-title">Last Alert</div>
+        <div class="card-value" id="cardTime">—</div>
+      </div>
+    </div>
+
+    <!-- Alert history -->
+    <div class="alert-history">
+      <h3>Your Alert History</h3>
+      <div id="historyList">
+        <div style="color:var(--muted);font-size:12px;
+             font-family:var(--font-mono);padding:16px 0;">
+          No alerts sent yet.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ─── SCRIPTS ───────────────────────────────────────────── -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/student.js"></script>
+
+</body>
+</html>

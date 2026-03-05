@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusShield — Admin Dashboard</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body>
+
+  <!-- ─── NAV ─────────────────────────────────────────────── -->
+  <nav>
+    <a class="logo" href="login.html">
+      <span class="logo-dot"></span>
+      CAMPUS<span style="color:var(--text)">SHIELD</span>
+    </a>
+
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div id="adminStatusChip" class="chip demo">
+        <span class="chip-dot"></span>
+        <span id="adminStatusText">CONNECTING...</span>
+      </div>
+      <div class="chip">
+        <span class="chip-dot"></span>
+        <span id="liveTime">--:--:--</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px;">
+      <a href="index.html" class="btn btn-ghost">← Student</a>
+      <button class="btn btn-ghost" onclick="logout()"
+        style="font-size:12px;padding:6px 14px;">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- ─── ADMIN PAGE ────────────────────────────────────────── -->
+  <div class="admin-page">
+
+    <!-- ── LEFT SIDEBAR ──────────────────────────────────────── -->
+    <aside class="sidebar">
+
+      <!-- Header + Stats -->
+      <div class="sidebar-header">
+        <h2>Live Alerts</h2>
+        <div class="stats-row">
+          <div class="stat-box total">
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-box active">
+            <div class="stat-num" id="statActive">0</div>
+            <div class="stat-label">Active</div>
+          </div>
+          <div class="stat-box today">
+            <div class="stat-num" id="statToday">0</div>
+            <div class="stat-label">Today</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter buttons -->
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterAlerts('all', this)">All</button>
+        <button class="filter-btn" onclick="filterAlerts('new', this)">New</button>
+        <button class="filter-btn" onclick="filterAlerts('active', this)">Active</button>
+        <button class="filter-btn" onclick="filterAlerts('resolved', this)">Resolved</button>
+      </div>
+
+      <!-- Alerts list -->
+      <div class="alerts-list" id="alertsList">
+        <div class="empty-state">
+          <div class="empty-icon">📡</div>
+          <span>Waiting for alerts...</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="sidebar-footer">
+        <button class="clear-btn" onclick="clearAllAlerts()">
+          Clear All Alerts
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- ── MAP AREA ───────────────────────────────────────────── -->
+    <div class="map-area">
+
+      <!-- Map toolbar -->
+      <div class="map-toolbar">
+        <div class="map-toolbar-left">
+          <span class="map-title">📍 Live Incident Map</span>
+          <div class="chip" id="mapChip">
+            <span class="chip-dot"></span>
+            <span id="mapAlertCount">0 alerts on map</span>
+          </div>
+        </div>
+        <div class="map-toolbar-right">
+          <button class="btn btn-ghost" onclick="centerMap()">
+            ⊕ Re-center
+          </button>
+          <button class="btn btn-ghost" onclick="toggleSatellite()">
+            🛰 Satellite
+          </button>
+        </div>
+      </div>
+
+      <!-- Leaflet map -->
+      <div id="map"></div>
+
+      <!-- Detail panel -->
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-field">
+          <span class="detail-label">Alert ID</span>
+          <span class="detail-value" id="detailId">—</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Student</span>
+          <span class="detail-value" id="detailUser">—</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Location</span>
+          <span class="detail-value" id="detailLocation">—</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Time</span>
+          <span class="detail-value" id="detailTime">—</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Status</span>
+          <span class="detail-value text-red" id="detailStatus">—</span>
+        </div>
+        <button class="resolve-btn" id="resolveBtn" onclick="resolveSelected()">
+          ✓ Mark Resolved
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── SCRIPTS ───────────────────────────────────────────── -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/admin.js"></script>
+
+</body>
+</html>
