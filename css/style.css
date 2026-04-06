@@ -1,0 +1,197 @@
+/* ─── GOOGLE FONTS ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ─── CSS VARIABLES ─────────────────────────────────────── */
+:root {
+  --bg:         #04050a;
+  --bg-2:       #08090f;
+  --surface:    #0d0f18;
+  --surface-2:  #131620;
+  --surface-3:  #191c2a;
+  --border:     rgba(255,255,255,0.07);
+  --border-2:   rgba(255,255,255,0.12);
+
+  --red:        #ff2d55;
+  --red-dim:    rgba(255,45,85,0.1);
+  --red-glow:   rgba(255,45,85,0.4);
+
+  --green:      #00d68f;
+  --green-dim:  rgba(0,214,143,0.1);
+
+  --amber:      #ffb300;
+  --amber-dim:  rgba(255,179,0,0.1);
+
+  --blue:       #3d7fff;
+  --blue-dim:   rgba(61,127,255,0.1);
+
+  --purple:     #7c5af6;
+
+  --text:       #eef0f8;
+  --text-2:     #8891aa;
+  --text-3:     #404660;
+  --muted:      #404660;
+
+  --font-ui:    'Space Grotesk', sans-serif;
+  --font-mono:  'Space Mono', monospace;
+
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  18px;
+  --radius-xl:  24px;
+
+  --nav-h:      60px;
+}
+
+/* ─── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* ─── SHARED NAV ─────────────────────────────────────────── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: var(--nav-h);
+  background: rgba(4,5,10,0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  gap: 10px;
+}
+
+/* ─── LOGO ───────────────────────────────────────────────── */
+.logo {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #ff2d55, #cc1133);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  box-shadow: 0 0 18px var(--red-glow), 0 2px 8px rgba(0,0,0,0.4);
+  flex-shrink: 0;
+  animation: logo-pulse 3s ease-in-out infinite;
+}
+
+@keyframes logo-pulse {
+  0%, 100% { box-shadow: 0 0 18px var(--red-glow), 0 2px 8px rgba(0,0,0,0.4); }
+  50%       { box-shadow: 0 0 32px var(--red-glow), 0 2px 8px rgba(0,0,0,0.4); }
+}
+
+.logo-text { letter-spacing: 0.08em; }
+.logo-text span { color: var(--text-2); font-weight: 400; }
+
+@media (max-width: 360px) { .logo-text { display: none; } }
+
+/* ─── CHIP ───────────────────────────────────────────────── */
+.chip {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border-2);
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.05em;
+  transition: all .3s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.chip.connected   { border-color: rgba(0,214,143,0.3); color: var(--green); background: var(--green-dim); }
+.chip.alert-live  { border-color: rgba(255,45,85,0.4); color: var(--red); background: var(--red-dim); animation: chip-flash 1s ease-in-out infinite; }
+.chip.demo        { border-color: rgba(255,179,0,0.3); color: var(--amber); background: var(--amber-dim); }
+
+@keyframes chip-flash { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+.chip-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: dot-blink 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid var(--border-2);
+}
+.btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.2); background: var(--surface-2); }
+
+/* Nav right container */
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
+@media (max-width: 520px) {
+  .btn { padding: 7px 12px; font-size: 12px; }
+  .chip { font-size: 9px; padding: 4px 8px; }
+  nav { padding: 0 14px; }
+}
+
+/* ─── UTILITY ────────────────────────────────────────────── */
+.text-red   { color: var(--red); }
+.text-green { color: var(--green); }
+.text-amber { color: var(--amber); }
+.text-blue  { color: var(--blue); }
+.text-muted { color: var(--text-2); }
+.text-dim   { color: var(--text-3); }
+.font-mono  { font-family: var(--font-mono); }
