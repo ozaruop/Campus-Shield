@@ -10,7 +10,6 @@ let deadManInterval = null;
 let deadManSeconds  = 0;
 let deadManActive   = false;
 let inboxOpen       = false;
-let inboxMessages   = [];
 
 // ─── SESSION HELPERS ──────────────────────────────────────
 function getSession() {
@@ -588,108 +587,5 @@ async function updateNearbyCount(lat, lng) {
     card.style.color = count > 0 ? "var(--text)" : "var(--muted)";
   } catch (err) {
     card.textContent = "—";
-  }
-}
-
-// ─── INBOX: LISTEN FOR ADMIN REPLIES ─────────────────────
-function listenForAdminReplies() {
-  if (!window.db || !currentUser) return;
-  const studentId = currentUser.studentId;
-
-  window.db.collection("admin_replies")
-    .where("studentId", "==", studentId)
-    .orderBy("sentAt", "desc")
-    .onSnapshot(snapshot => {
-      snapshot.docChanges().forEach(change => {
-        if (change.type === "added") {
-          const data = change.doc.data();
-          const msg = {
-            id:       change.doc.id,
-            message:  data.message,
-            from:     data.adminName || "Campus Security",
-            sentAt:   data.sentAt?.toDate ? data.sentAt.toDate() : new Date(),
-            seen:     false,
-            type:     "reply",
-          };
-          // Avoid duplicates
-          if (!inboxMessages.find(m => m.id === msg.id)) {
-            inboxMessages.unshift(msg);
-            if (!inboxOpen) updateInboxBadge();
-            renderInbox();
-          }
-        }
-      });
-    }, err => console.error("Admin reply listener error:", err));
-}
-
-// ─── INBOX: LISTEN FOR BROADCAST MESSAGES ────────────────
-function listenForBroadcasts() {
-  if (!window.db) return;
-
-  window.db.collection("broadcast_messages")
-    .orderBy("sentAt", "desc")
-    .limit(20)
-    .onSnapshot(snapshot => {
-      snapshot.docChanges().forEach(change => {
-        if (change.type === "added") {
-          const data = change.doc.data();
-          const msg = {
-            id:       change.doc.id,
-            message:  data.message,
-            from:     data.adminName || "Campus Security",
-            sentAt:   data.sentAt?.toDate ? data.sentAt.toDate() : new Date(),
-            seen:     false,
-            type:     "broadcast",
-          };
-          if (!inboxMessages.find(m => m.id === msg.id)) {
-            inboxMessages.unshift(msg);
-            if (!inboxOpen) updateInboxBadge();
-            renderInbox();
-          }
-        }
-      });
-    }, err => console.error("Broadcast listener error:", err));
-}
-
-// ─── INBOX: RENDER MESSAGES ───────────────────────────────
-function renderInbox() {
-  const panel = document.getElementById("inboxPanel");
-  if (!panel) return;
-
-  if (inboxMessages.length === 0) {
-    panel.innerHTML = `
-      <div style="padding:16px;text-align:center;color:var(--text-3);font-size:13px;">
-        No messages yet.<br>Messages from security will appear here.
-      </div>`;
-    return;
-  }
-
-  panel.innerHTML = inboxMessages.map(m => {
-    const time = m.sentAt instanceof Date
-      ? m.sentAt.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true })
-      : "—";
-    const icon = m.type === "broadcast" ? "📢" : "💬";
-    const unseen = !m.seen ? "border-left:3px solid var(--red);" : "";
-    return `
-      <div style="padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.06);${unseen}">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-          <span style="font-size:11px;font-weight:600;color:var(--text-2);">${icon} ${m.from}</span>
-          <span style="font-size:10px;color:var(--text-3);">${time}</span>
-        </div>
-        <div style="font-size:13px;color:var(--text);line-height:1.4;">${m.message}</div>
-      </div>`;
-  }).join("");
-}
-
-// ─── INBOX: UPDATE BADGE ──────────────────────────────────
-function updateInboxBadge() {
-  const badge = document.getElementById("inboxBadge");
-  if (!badge) return;
-  const unseen = inboxMessages.filter(m => !m.seen).length;
-  if (unseen > 0) {
-    badge.textContent = unseen > 9 ? "9+" : unseen;
-    badge.style.display = "flex";
-  } else {
-    badge.style.display = "none";
   }
 }
