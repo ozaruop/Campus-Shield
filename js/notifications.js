@@ -282,12 +282,9 @@ function listenForAdminReplies() {
   let isFirst = true;
   window.db.collection("admin_replies")
     .where("studentId", "==", session.studentId)
-    .orderBy("sentAt", "desc")
-    .limit(20)
     .onSnapshot(snapshot => {
       if (isFirst) {
         isFirst = false;
-        // Load existing messages into inbox on first load
         snapshot.docs.forEach(doc => {
           const reply = doc.data();
           addMessageToInbox({
@@ -317,7 +314,7 @@ function listenForAdminReplies() {
         change.doc.ref.update({ seen: true }).catch(() => {});
         updateInboxBadge();
       });
-    });
+    }, err => console.error("❌ Admin replies error:", err));
 }
 
 // ─── STUDENT INBOX ────────────────────────────────────────
