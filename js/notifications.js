@@ -1,6 +1,14 @@
 // ─── VAPID KEY ────────────────────────────────────────────
 const VAPID_KEY = "BGx-QSAHn2LGlnMctse5PPgKVXx_b8EG3XKD8PzhJrOtFbXcZyBJ5-xO4iLVSuGRYdyF1oV5XYKjd7qwxD9WALk";
 
+// ─── SESSION HELPER (self-contained) ─────────────────────
+if (typeof getSession === "undefined") {
+  window.getSession = function() {
+    try { return JSON.parse(localStorage.getItem("campusShieldUser")); }
+    catch { return null; }
+  };
+}
+
 // ─── PRESENCE: REGISTER USER ONLINE WITH LOCATION ─────────
 async function registerPresence(lat, lng) {
   if (!window.db) return;
