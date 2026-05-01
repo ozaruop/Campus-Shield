@@ -269,10 +269,11 @@ function listenForBroadcasts() {
 
 // ─── LISTEN FOR ADMIN DIRECT MESSAGES (student side) ──────
 function listenForAdminReplies() {
-  if (!window.db || !currentUser) return;
+  const session = getSession();
+  if (!window.db || !session || !session.studentId) return;
   let isFirst = true;
   window.db.collection("admin_replies")
-    .where("studentId", "==", currentUser.studentId)
+    .where("studentId", "==", session.studentId)
     .orderBy("sentAt", "desc")
     .limit(20)
     .onSnapshot(snapshot => {
