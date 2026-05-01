@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="theme-color" content="#04050a"/>
+  <link rel="manifest" href="manifest.json"/>
+  <title>CampusShield — Login</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/login.css"/>
+</head>
+<body>
+
+  <!-- ─── NAV ─────────────────────────────────────────────── -->
+  <nav>
+    <a class="logo" href="login.html">
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">CAMPUS<span>SHIELD</span></span>
+    </a>
+    <div class="chip demo">
+      <span class="chip-dot"></span>
+      <span>GEHU DEHRADUN</span>
+    </div>
+  </nav>
+
+  <!-- ─── LOGIN PAGE ───────────────────────────────────────── -->
+  <main class="login-page">
+
+    <div class="login-grid-bg"></div>
+    <div class="login-glow"></div>
+
+    <div class="login-container">
+
+      <div class="login-tabs">
+        <button class="login-tab active" id="tabStudent" onclick="switchTab('student')">
+          🎓 Student
+        </button>
+        <button class="login-tab" id="tabAdmin" onclick="switchTab('admin')">
+          🛡️ Admin
+        </button>
+      </div>
+
+      <!-- ── STUDENT LOGIN FORM ────────────────────────────── -->
+      <div class="login-card" id="studentForm">
+
+        <div class="login-card-header">
+          <h2>Student Login</h2>
+          <p>Enter your details to access the safety system</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Student ID</label>
+          <input type="text" class="form-input" id="studentId"
+            placeholder="e.g. 24210X7" maxlength="20" autocomplete="username"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="studentName"
+            placeholder="e.g. Aditya Thapliyal" autocomplete="name"/>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Course</label>
+            <select class="form-input form-select" id="studentCourse">
+              <option value="">Select course</option>
+              <option value="BCA">BCA</option>
+              <option value="BCA-DS">BCA (Data Science)</option>
+              <option value="BCA-AI">BCA (AI/ML)</option>
+              <option value="MCA">MCA</option>
+              <option value="B.Tech CSE">B.Tech CSE</option>
+              <option value="B.Tech IT">B.Tech IT</option>
+              <option value="B.Tech ECE">B.Tech ECE</option>
+              <option value="B.Tech ME">B.Tech ME</option>
+              <option value="B.Tech CE">B.Tech CE</option>
+              <option value="MBA">MBA</option>
+              <option value="BBA">BBA</option>
+              <option value="B.Com">B.Com</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <input type="text" class="form-input" id="studentSection"
+              placeholder="e.g. A2" maxlength="5"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" id="studentPhone"
+            placeholder="10-digit number" maxlength="10"
+            autocomplete="tel" inputmode="numeric" pattern="[0-9]*"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Emergency Contact</label>
+          <input type="tel" class="form-input" id="studentEmergency"
+            placeholder="Parent / Guardian number" maxlength="10"
+            inputmode="numeric" pattern="[0-9]*"/>
+        </div>
+
+        <!-- Persist notice -->
+        <div class="persist-badge">
+          <span>🔒</span>
+          <span>You'll stay logged in on this device</span>
+        </div>
+
+        <p class="form-error" id="studentError"></p>
+
+        <button class="login-btn" onclick="studentLogin()">
+          Enter Safety System →
+        </button>
+
+        <p class="form-note">
+          Your details are only used to identify you during emergencies.
+        </p>
+
+      </div>
+
+      <!-- ── ADMIN LOGIN FORM ──────────────────────────────── -->
+      <div class="login-card hidden" id="adminForm">
+
+        <div class="login-card-header">
+          <h2>Admin Login</h2>
+          <p>Campus security &amp; administration access only</p>
+        </div>
+
+        <div class="login-card-icon">🛡️</div>
+
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" id="adminUsername"
+            placeholder="Enter admin username" autocomplete="username"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" class="form-input" id="adminPassword"
+              placeholder="Enter password" autocomplete="current-password"/>
+            <button class="eye-btn" onclick="togglePassword()" type="button">👁</button>
+          </div>
+        </div>
+
+        <!-- Persist notice -->
+        <div class="persist-badge">
+          <span>🔒</span>
+          <span>Session persists until you log out</span>
+        </div>
+
+        <p class="form-error" id="adminError"></p>
+
+        <button class="login-btn admin" onclick="adminLogin()">
+          Access Dashboard →
+        </button>
+
+        <p class="form-note">Authorized personnel only.</p>
+
+      </div>
+
+    </div>
+
+    <p class="login-footer">
+      CampusShield v1.0 — Graphic Era Hill University, Dehradun
+    </p>
+
+  </main>
+
+  <script src="js/firebase-config.js?v=1777628115"></script>
+  <script src="js/login.js?v=1777628115"></script>
+
+</body>
+</html>

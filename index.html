@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="theme-color" content="#04050a"/>
+  <link rel="manifest" href="manifest.json"/>
+  <title>CampusShield — Stay Safe</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/student.css"/>
+  <style>
+    /* ── Inbox Panel ───────────────────────────────── */
+    .inbox-panel {
+      display: none;
+      position: fixed;
+      top: 64px;
+      right: 12px;
+      width: min(380px, calc(100vw - 24px));
+      max-height: 70vh;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      z-index: 9999;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.6);
+      overflow-y: auto;
+    }
+    .inbox-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .inbox-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      color: var(--text-2);
+      font-family: var(--font-mono);
+    }
+    .inbox-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      transition: border-color 0.15s;
+    }
+    .inbox-item.unread {
+      border-color: var(--green);
+      background: rgba(0,214,143,0.04);
+    }
+    .inbox-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .inbox-from {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-bottom: 4px;
+    }
+    .inbox-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .inbox-time {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+    }
+    .inbox-empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 24px 0;
+      font-family: var(--font-mono);
+    }
+    /* ── Custom duration ───────────────────────────── */
+    .custom-duration-wrap {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .custom-duration-wrap input {
+      width: 80px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: var(--font-ui);
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    .custom-duration-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .custom-duration-wrap label {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="logo" href="login.html">
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">CAMPUS<span>SHIELD</span></span>
+    </a>
+    <div id="statusChip" class="chip demo">
+      <span class="chip-dot"></span>
+      <span id="statusText">CONNECTING...</span>
+    </div>
+    <!-- User info injected by JS -->
+  </nav>
+
+  <!-- ── INBOX PANEL ────────────────────────────────── -->
+  <div class="inbox-panel" id="inboxPanel">
+    <div class="inbox-header">
+      <span class="inbox-title">📬 MESSAGES FROM SECURITY</span>
+      <button onclick="toggleInbox()"
+        style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+    <div id="inboxEmpty" class="inbox-empty">No messages yet.<br>Messages from security will appear here.</div>
+    <div id="inboxList"></div>
+  </div>
+
+  <main class="student-page">
+
+    <div class="grid-bg"></div>
+    <div class="bg-mesh"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+
+    <p class="hero-eyebrow">Campus Safety System</p>
+    <h1 class="hero-title">
+      <span class="line1">One tap.</span>
+      <span class="line2">Instant alert.</span>
+    </h1>
+    <p class="hero-subtitle">
+      Select an alert type then press SOS to silently notify campus security
+      and nearby students with your precise location.
+    </p>
+
+    <!-- ── ALERT TYPE SELECTOR ────────────────────────────── -->
+    <div class="section-label">Alert Type</div>
+    <div id="alertTypes" class="alert-types-grid"></div>
+
+    <!-- ── SOS BUTTON ─────────────────────────────────────── -->
+    <div class="sos-wrapper" id="sosWrapper">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+      <button class="sos-btn" id="sosBtn" onclick="triggerAlert()">
+        <span class="btn-label">SOS</span>
+        <span class="btn-sub">TAP TO ALERT</span>
+      </button>
+    </div>
+
+    <p class="status-msg" id="statusMsg">Ready — your location will be shared on alert</p>
+
+    <div class="location-bar" id="locationBar">
+      <span class="loc-icon">📍</span>
+      <span id="locationText">Acquiring location...</span>
+    </div>
+
+    <!-- ── INFO CARDS ─────────────────────────────────────── -->
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="card-icon">🛡️</div>
+        <div class="card-title">Status</div>
+        <div class="card-value" id="cardStatus">SAFE</div>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">📡</div>
+        <div class="card-title">Alerts</div>
+        <div class="card-value" id="cardCount">0</div>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">🕐</div>
+        <div class="card-title">Last Alert</div>
+        <div class="card-value" id="cardTime">—</div>
+      </div>
+      <div class="info-card">
+        <div class="card-icon">👥</div>
+        <div class="card-title">Nearby Online</div>
+        <div class="card-value" id="cardNearby">—</div>
+      </div>
+    </div>
+
+    <!-- ── DEAD MAN SWITCH ───────────────────────────────── -->
+    <div class="feature-section">
+      <div class="feature-header">
+        <span class="feature-icon">⏱</span>
+        <div>
+          <div class="feature-title">Safe Walk Timer</div>
+          <div class="feature-desc">Auto-fires SOS if you don't check in before time runs out</div>
+        </div>
+      </div>
+      <div class="deadman-controls">
+        <select id="deadManDuration" class="select-input" onchange="onDurationChange()">
+          <option value="5">5 minutes</option>
+          <option value="10">10 minutes</option>
+          <option value="15" selected>15 minutes</option>
+          <option value="30">30 minutes</option>
+          <option value="45">45 minutes</option>
+          <option value="60">60 minutes</option>
+          <option value="custom">Custom...</option>
+        </select>
+        <button class="btn-feature" id="deadManBtn" onclick="startDeadManSwitch()">
+          🔒 Start Safe Walk Timer
+        </button>
+      </div>
+      <!-- Custom duration input (shown when "Custom..." selected) -->
+      <div class="custom-duration-wrap" id="customDurationWrap">
+        <input type="number" id="deadManCustom" min="1" max="120" placeholder="Minutes" value="20"/>
+        <label>minutes (1–120)</label>
+      </div>
+      <div id="deadManCountdown" style="display:none;font-size:13px;font-family:var(--font-mono);margin-top:8px;color:var(--amber);"></div>
+      <button class="btn-safe" id="safeBtn" onclick="iAmSafe()">
+        ✅ I'm Safe — Cancel Timer
+      </button>
+    </div>
+
+    <!-- ── ANONYMOUS TIP ──────────────────────────────────── -->
+    <div class="feature-section" id="tipPanel">
+      <div class="feature-header">
+        <span class="feature-icon">👁</span>
+        <div>
+          <div class="feature-title">Anonymous Tip</div>
+          <div class="feature-desc">Report suspicious activity without revealing your identity</div>
+        </div>
+      </div>
+      <select id="tipType" class="select-input" style="margin-bottom:10px;">
+        <option value="">Select incident type...</option>
+        <option value="suspicious_person">Suspicious Person</option>
+        <option value="suspicious_vehicle">Suspicious Vehicle</option>
+        <option value="theft">Theft / Property Crime</option>
+        <option value="harassment">Harassment</option>
+        <option value="vandalism">Vandalism</option>
+        <option value="drug_activity">Drug Activity</option>
+        <option value="other">Other</option>
+      </select>
+      <textarea id="tipDescription" class="tip-textarea"
+        placeholder="Describe what you saw (e.g. 'A man in red jacket near Block B was acting suspiciously...')"
+        rows="3"></textarea>
+      <input id="tipLocation" class="input-field" type="text"
+        placeholder="Location (e.g. Block C parking, Library entrance)" style="margin-top:8px;"/>
+      <div id="tipError" style="font-size:12px;color:var(--red);margin-top:6px;min-height:18px;"></div>
+      <button class="btn-feature" id="tipBtn" onclick="submitTip()" style="margin-top:8px;">
+        Submit Tip Anonymously →
+      </button>
+    </div>
+
+    <!-- ── EMERGENCY PROTOCOLS ────────────────────────────── -->
+    <div class="feature-section">
+      <div class="feature-header">
+        <span class="feature-icon">📋</span>
+        <div>
+          <div class="feature-title">Emergency Protocols</div>
+          <div class="feature-desc">Offline-ready step-by-step guides for common emergencies</div>
+        </div>
+      </div>
+      <div id="protocolCards"></div>
+    </div>
+
+    <!-- ── ALERT HISTORY ──────────────────────────────────── -->
+    <div class="alert-history">
+      <h3>Your Alert History</h3>
+      <div id="historyList">
+        <div style="color:var(--muted);font-size:12px;font-family:var(--font-mono);padding:16px 0;">
+          No alerts sent yet.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="js/firebase-config.js?v=1777628115"></script>
+  <script src="js/notifications.js?v=1777628115"></script>
+  <script src="js/map.js?v=1777628115"></script>
+  <script src="js/student.js?v=1777628115"></script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Core alert collections ──────────────────────────────
+    match /alerts/{doc} {
+      allow read, write: if true;
+    }
+    match /notifications/{doc} {
+      allow read, write: if true;
+    }
+    match /fcm_tokens/{doc} {
+      allow read, write: if true;
+    }
+
+    // ── Proximity / presence ────────────────────────────────
+    match /user_presence/{doc} {
+      allow read, write: if true;
+    }
+    match /proximity_alerts/{doc} {
+      allow read, write: if true;
+    }
+
+    // ── Broadcast messages (admin → all students) ───────────
+    match /broadcast_messages/{doc} {
+      allow read, write: if true;
+    }
+
+    // ── Anonymous tips (student → admin) ───────────────────
+    match /anonymous_tips/{doc} {
+      allow read, write: if true;
+    }
+
+    // ── Admin replies (admin → specific student inbox) ──────
+    match /admin_replies/{doc} {
+      allow read, write: if true;
+    }
+
+    // ── Student profiles (written on login) ─────────────────
+    match /students/{doc} {
+      allow read, write: if true;
+    }
+  }
+}

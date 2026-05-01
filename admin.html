@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="theme-color" content="#04050a"/>
+  <link rel="manifest" href="manifest.json"/>
+  <title>CampusShield — Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <style>
+    /* ── Quick reply buttons ─────────────────── */
+    .quick-reply-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-2);
+      background: var(--surface-2);
+      color: var(--text-2);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-ui);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .quick-reply-btn:hover {
+      background: var(--surface-3);
+      color: var(--text);
+      border-color: var(--blue);
+    }
+
+    /* ── Broadcast panel ─────────────────────── */
+    .broadcast-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .broadcast-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--text-3);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .broadcast-row {
+      display: flex;
+      gap: 8px;
+    }
+    .broadcast-input {
+      flex: 1;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 12px;
+      font-family: var(--font-ui);
+      outline: none;
+    }
+    .broadcast-input:focus { border-color: var(--border-2); }
+    .broadcast-send-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: var(--amber);
+      color: #1a1100;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+
+    /* ── Tips panel ───────────────────────────── */
+    .sidebar-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 0 4px 8px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+    .sidebar-tab {
+      flex: 1;
+      padding: 7px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-3);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-ui);
+      position: relative;
+      transition: all 0.15s;
+    }
+    .sidebar-tab.active {
+      background: var(--surface-3);
+      color: var(--text);
+    }
+    .tips-badge {
+      position: absolute;
+      top: 2px; right: 6px;
+      background: var(--amber);
+      color: #1a1100;
+      font-size: 9px;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 0 5px;
+      min-width: 14px;
+      text-align: center;
+    }
+    .tip-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
+      transition: border-color 0.15s;
+    }
+    .tip-item.reviewed { opacity: 0.5; }
+    .tip-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .tip-type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--amber);
+      font-family: var(--font-mono);
+    }
+    .tip-time { font-size: 10px; color: var(--text-3); font-family: var(--font-mono); }
+    .tip-desc { font-size: 12px; color: var(--text); line-height: 1.5; margin-bottom: 4px; }
+    .tip-loc { font-size: 11px; color: var(--text-2); margin-bottom: 8px; }
+    .tip-resolve-btn {
+      width: 100%;
+      padding: 6px;
+      border-radius: 7px;
+      border: 1px solid var(--border-2);
+      background: transparent;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-ui);
+    }
+    .tip-reviewed-label { font-size: 11px; color: var(--green); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="logo" href="login.html">
+      <span class="logo-icon">🛡️</span>
+      <span class="logo-text">CAMPUS<span>SHIELD</span></span>
+    </a>
+
+    <div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:center;min-width:0;">
+      <div id="adminStatusChip" class="chip demo">
+        <span class="chip-dot"></span>
+        <span id="adminStatusText">CONNECTING...</span>
+      </div>
+      <div class="chip" id="clockChip">
+        <span class="chip-dot"></span>
+        <span id="liveTime">--:--</span>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <a href="index.html" class="btn btn-ghost" style="font-size:12px;">
+        ← <span class="nav-label">Student</span>
+      </a>
+      <button class="btn btn-ghost" onclick="logout()" style="font-size:12px;">
+        ↩ <span class="nav-label">Logout</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="admin-page">
+
+    <!-- Mobile tab bar -->
+    <div class="mobile-tabs" id="mobileTabs">
+      <button class="mobile-tab active" onclick="showMobilePanel('alerts')" id="mTabAlerts">🚨 Alerts</button>
+      <button class="mobile-tab" onclick="showMobilePanel('map')" id="mTabMap">🗺 Map</button>
+    </div>
+
+    <!-- ── LEFT SIDEBAR ──────────────────────────── -->
+    <aside class="sidebar" id="sidebarPanel">
+
+      <div class="sidebar-header">
+        <h2>Live Alerts</h2>
+        <div class="stats-row">
+          <div class="stat-box total">
+            <div class="stat-num" id="statTotal">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-box active">
+            <div class="stat-num" id="statActive">0</div>
+            <div class="stat-label">Active</div>
+          </div>
+          <div class="stat-box today">
+            <div class="stat-num" id="statToday">0</div>
+            <div class="stat-label">Today</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Broadcast message bar -->
+      <div class="broadcast-panel">
+        <div class="broadcast-label">📢 BROADCAST TO ALL STUDENTS</div>
+        <div class="broadcast-row">
+          <input id="broadcastInput" class="broadcast-input" type="text"
+            placeholder="e.g. Avoid Block C — incident in progress"
+            onkeydown="if(event.key==='Enter')sendBroadcast()"/>
+          <button class="broadcast-send-btn" onclick="sendBroadcast()">Send</button>
+        </div>
+        <div id="broadcastHistory" style="margin-top:8px;max-height:120px;overflow-y:auto;"></div>
+      </div>
+
+      <!-- Sidebar tabs: Alerts | Tips -->
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" id="stAlerts" onclick="switchSidebarTab('alerts')">
+          🚨 Alerts
+        </button>
+        <button class="sidebar-tab" id="stTips" onclick="switchSidebarTab('tips')">
+          👁 Tips
+          <span class="tips-badge" id="tipsBadge" style="display:none;"></span>
+        </button>
+      </div>
+
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" onclick="filterAlerts('all', this)">All</button>
+        <button class="filter-btn" onclick="filterAlerts('new', this)">New</button>
+        <button class="filter-btn" onclick="filterAlerts('active', this)">Active</button>
+        <button class="filter-btn" onclick="filterAlerts('resolved', this)">Resolved</button>
+      </div>
+
+      <div class="alerts-list" id="alertsList">
+        <div class="empty-state">
+          <div class="empty-icon">📡</div>
+          <span>Waiting for alerts...</span>
+        </div>
+      </div>
+
+      <div class="alerts-list" id="tipsList" style="display:none;">
+        <div class="empty-state">
+          <div class="empty-icon">👁</div>
+          <span>No tips yet</span>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="clear-btn" onclick="clearAllAlerts()">Clear All Alerts</button>
+      </div>
+
+    </aside>
+
+    <!-- ── MAP AREA ─────────────────────────────── -->
+    <div class="map-area" id="mapPanel">
+
+      <div class="map-toolbar">
+        <div class="map-toolbar-left">
+          <span class="map-title">📍 Live Incident Map</span>
+          <div class="chip" id="mapChip">
+            <span class="chip-dot"></span>
+            <span id="mapAlertCount">0 alerts</span>
+          </div>
+        </div>
+        <div class="map-toolbar-right">
+          <button class="btn btn-ghost" onclick="centerMap()" style="font-size:12px;padding:6px 12px;">
+            ⊕ <span class="map-btn-label">Re-center</span>
+          </button>
+          <button class="btn btn-ghost" onclick="toggleSatellite()" style="font-size:12px;padding:6px 12px;">
+            🛰 <span class="map-btn-label">Satellite</span>
+          </button>
+          <button class="btn btn-ghost" id="heatBtn" onclick="toggleHeatmap()" style="font-size:12px;padding:6px 12px;">
+            🔥 <span class="map-btn-label">Heatmap</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="map"></div>
+
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-field">
+          <span class="detail-label">Alert ID</span>
+          <span class="detail-value" id="detailId">—</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Student</span>
+          <span class="detail-value" id="detailUser">—</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Location</span>
+          <span class="detail-value" id="detailLocation">—</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Time</span>
+          <span class="detail-value" id="detailTime">—</span>
+        </div>
+        <div class="detail-field">
+          <span class="detail-label">Status</span>
+          <span class="detail-value text-red" id="detailStatus">—</span>
+        </div>
+        <button class="resolve-btn" id="resolveBtn" onclick="resolveSelected()">
+          ✓ Mark Resolved
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="js/firebase-config.js?v=1777628115"></script>
+  <script src="js/notifications.js?v=1777628115"></script>
+  <script src="js/map.js?v=1777628115"></script>
+  <script src="js/admin.js?v=1777628115"></script>
+  <script>
+    function showMobilePanel(panel) {
+      const sidebar = document.getElementById('sidebarPanel');
+      const mapArea = document.getElementById('mapPanel');
+      const tAlerts = document.getElementById('mTabAlerts');
+      const tMap    = document.getElementById('mTabMap');
+      if (panel === 'alerts') {
+        sidebar.classList.remove('mobile-hidden');
+        mapArea.classList.add('mobile-hidden');
+        tAlerts.classList.add('active');
+        tMap.classList.remove('active');
+      } else {
+        mapArea.classList.remove('mobile-hidden');
+        sidebar.classList.add('mobile-hidden');
+        tMap.classList.add('active');
+        tAlerts.classList.remove('active');
+        setTimeout(() => { if (window._map) window._map.invalidateSize(); }, 50);
+      }
+    }
+
+    function switchSidebarTab(tab) {
+      const alertsList = document.getElementById('alertsList');
+      const tipsList   = document.getElementById('tipsList');
+      const filterBar  = document.getElementById('filterBar');
+      const stAlerts   = document.getElementById('stAlerts');
+      const stTips     = document.getElementById('stTips');
+      if (tab === 'alerts') {
+        alertsList.style.display = '';
+        tipsList.style.display   = 'none';
+        filterBar.style.display  = '';
+        stAlerts.classList.add('active');
+        stTips.classList.remove('active');
+      } else {
+        alertsList.style.display = 'none';
+        tipsList.style.display   = '';
+        filterBar.style.display  = 'none';
+        stTips.classList.add('active');
+        stAlerts.classList.remove('active');
+      }
+    }
+  </script>
+
+</body>
+</html>
